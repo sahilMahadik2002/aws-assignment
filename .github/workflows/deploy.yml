@@ -18,27 +18,19 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+      - name: Debug SSH Environment
+        run: |
+          echo "USER: ${{ secrets.EC2_USER }}"
+          echo "HOST: ${{ secrets.EC2_HOST }}"
+
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            # Remove old project
             rm -rf ~/react-app
             mkdir ~/react-app
             cd ~/react-app
-
-            # Clone latest code
             git clone https://github.com/sahilMahadik2002/aws-assignment.git .
-
-            # Ensure vite.config.js has base: './'
-            sed -i "s|base: .*|base: './',|" vite.config.js || echo "Check vite.config.js manually if this fails."
-
-            # Install dependencies & build
             npm install
             npm run build
-
-            # Kill old serve processes if any
-            pkill -f "serve" || true
-
-            # Serve the app bound to 0.0.0.0:5712
-            nohup npx serve -s dist -l http://0.0.0.0:5712 > serve.log 2>&1 &
+            nohup npx serve -s dist -l 5712 > serve.log 2>&1 &
           EOF
