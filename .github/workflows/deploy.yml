@@ -7,40 +7,30 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          node-version: "18"
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Install dependencies
-        run: npm install
+      - name: Debug SSH Environment
+        run: |
+          echo "USER: ${{ secrets.EC2_USER }}"
+          echo "HOST: ${{ secrets.EC2_HOST }}"
 
-      - name: Build project
-        run: npm run build
-
-      - name: Copy build folder to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.EC2_DNS_KEY }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_PORT }}
-          source: "dist/"
-          target: "~/react-app/"
-
-      - name: Restart Nginx on EC2
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_DNS_KEY }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_PORT }}
-          script: |
-            sudo systemctl restart nginx
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            rm -rf ~/react-app
+            mkdir ~/react-app
+            cd ~/react-app
+            git clone https://github.com/sahilMahadik2002/aws-assignment.git .
+            npm install
+            npm run build
+            npx serve -s build -l 3000 &
+          EOF
