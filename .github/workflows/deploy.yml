@@ -30,7 +30,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_DNS_KEY }}
           username: ubuntu
-          key: ${{ secrets.REACT_APP_SECRET_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_PORT }}
           source: "dist/"
           target: "~/react-app/"
