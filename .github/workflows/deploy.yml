@@ -20,8 +20,8 @@ jobs:
 
       - name: Debug SSH Environment
         run: |
-        echo "USER: ${{ secrets.EC2_USER }}"
-        echo "HOST: ${{ secrets.EC2_HOST }}"
+          echo "USER: ${{ secrets.EC2_USER }}"
+          echo "HOST: ${{ secrets.EC2_HOST }}"
 
       - name: Deploy to EC2
         run: |
