@@ -32,5 +32,5 @@ jobs:
             git clone https://github.com/sahilMahadik2002/aws-assignment.git .
             npm install
             npm run build
-            nohup npx serve -s dist -l 3000 > serve.log 2>&1 &
+            nohup npx serve -s dist -l 5712 > serve.log 2>&1 &
           EOF
