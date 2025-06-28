@@ -23,7 +23,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/react-app
             if [ ! -d ".git" ]; then
-              git clone https://github.com/your-username/your-repo.git .
+              git clone https://github.com/sahilMahadik2002/aws-assignment.git .
             else
               git pull origin main
             fi
